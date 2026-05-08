@@ -8,7 +8,6 @@
 <meta name="apple-mobile-web-app-title" content="식물진단">
 <meta name="theme-color" content="#0a1a0f">
 <title>식물 수분 진단</title>
-<link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
@@ -27,15 +26,10 @@
     --border: rgba(255,255,255,0.08);
     --border-accent: rgba(61,220,106,0.3);
     --danger: #ff6b5b;
-    --warning: #ffb547;
-    --info: #5bc0ff;
-    --purple: #b47eff;
     --safe-top: env(safe-area-inset-top, 44px);
     --safe-bottom: env(safe-area-inset-bottom, 34px);
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
   html, body {
     width: 100%; height: 100%;
     background: var(--bg-deep);
@@ -44,15 +38,11 @@
     overflow: hidden;
     overscroll-behavior: none;
   }
-
-  /* ── App Shell ── */
   #app {
     width: 100%; height: 100vh;
     display: flex; flex-direction: column;
     position: relative; overflow: hidden;
   }
-
-  /* ambient glow */
   #app::before {
     content: '';
     position: absolute; top: -120px; left: 50%;
@@ -61,40 +51,22 @@
     background: radial-gradient(circle, rgba(61,220,106,0.12) 0%, transparent 70%);
     pointer-events: none; z-index: 0;
   }
-
-  /* ── Status bar ── */
   .status-bar {
     padding-top: var(--safe-top);
-    padding-left: 20px; padding-right: 20px;
-    padding-bottom: 8px;
+    padding-left: 20px; padding-right: 20px; padding-bottom: 8px;
     display: flex; align-items: center; justify-content: space-between;
-    position: relative; z-index: 10;
-    flex-shrink: 0;
+    position: relative; z-index: 10; flex-shrink: 0;
   }
   .status-time { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
-  .status-icons { display: flex; align-items: center; gap: 6px; font-size: 13px; }
-
-  /* ── Header ── */
-  .header {
-    padding: 4px 24px 16px;
-    position: relative; z-index: 10;
-    flex-shrink: 0;
-  }
+  .status-icons { display: flex; align-items: center; gap: 6px; }
+  .header { padding: 4px 24px 16px; position: relative; z-index: 10; flex-shrink: 0; }
   .header-title {
     font-family: 'DM Serif Display', serif;
-    font-size: 28px; font-weight: 400;
-    letter-spacing: -0.5px;
-    color: var(--text-primary);
-    line-height: 1.15;
+    font-size: 28px; font-weight: 400; letter-spacing: -0.5px;
+    color: var(--text-primary); line-height: 1.15;
   }
   .header-title span { color: var(--accent); font-style: italic; }
-  .header-sub {
-    margin-top: 4px;
-    font-size: 13px; color: var(--text-secondary);
-    font-weight: 300;
-  }
-
-  /* ── Scroll Content ── */
+  .header-sub { margin-top: 4px; font-size: 13px; color: var(--text-secondary); font-weight: 300; }
   .content {
     flex: 1; overflow-y: auto; overflow-x: hidden;
     padding: 0 16px calc(var(--safe-bottom) + 16px);
@@ -102,143 +74,69 @@
     -webkit-overflow-scrolling: touch;
   }
   .content::-webkit-scrollbar { display: none; }
-
-  /* ── Camera Card ── */
   .camera-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    overflow: hidden;
-    position: relative;
-    margin-bottom: 12px;
-    transition: transform 0.15s ease;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 24px; overflow: hidden; position: relative;
+    margin-bottom: 12px; transition: transform 0.15s ease;
   }
-  .camera-card:active { transform: scale(0.985); }
-
   .camera-preview {
     width: 100%; height: 220px;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    cursor: pointer;
-    position: relative; overflow: hidden;
+    cursor: pointer; position: relative; overflow: hidden;
     background: var(--bg-card);
   }
-
-  /* scanning lines effect */
   .camera-preview::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent, transparent 3px,
-      rgba(61,220,106,0.015) 3px, rgba(61,220,106,0.015) 4px
-    );
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(61,220,106,0.015) 3px, rgba(61,220,106,0.015) 4px);
     pointer-events: none;
   }
-
-  .camera-preview img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .camera-placeholder {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 10px;
-    padding: 20px;
-  }
-
+  .camera-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .camera-placeholder { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px; }
   .cam-icon-wrap {
-    width: 72px; height: 72px;
-    border: 1.5px solid var(--border-accent);
-    border-radius: 20px;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--accent-glow);
-    position: relative;
+    width: 72px; height: 72px; border: 1.5px solid var(--border-accent);
+    border-radius: 20px; display: flex; align-items: center; justify-content: center;
+    background: var(--accent-glow); position: relative;
   }
   .cam-icon-wrap::before {
-    content: '';
-    position: absolute; inset: -4px;
-    border: 1px solid rgba(61,220,106,0.15);
-    border-radius: 24px;
+    content: ''; position: absolute; inset: -4px;
+    border: 1px solid rgba(61,220,106,0.15); border-radius: 24px;
   }
-  .cam-icon {
-    font-size: 30px;
-    filter: drop-shadow(0 0 8px var(--accent-glow));
-  }
+  .cam-icon { font-size: 30px; filter: drop-shadow(0 0 8px var(--accent-glow)); }
   .cam-label { font-size: 15px; font-weight: 500; color: var(--text-primary); }
   .cam-hint { font-size: 12px; color: var(--text-tertiary); text-align: center; line-height: 1.5; }
-
-  /* corner brackets */
   .corner { position: absolute; width: 20px; height: 20px; }
   .corner-tl { top: 12px; left: 12px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); border-radius: 4px 0 0 0; }
   .corner-tr { top: 12px; right: 12px; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); border-radius: 0 4px 0 0; }
   .corner-bl { bottom: 12px; left: 12px; border-bottom: 2px solid var(--accent); border-left: 2px solid var(--accent); border-radius: 0 0 0 4px; }
   .corner-br { bottom: 12px; right: 12px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); border-radius: 0 0 4px 0; }
-
   .retake-btn {
     position: absolute; top: 10px; right: 10px;
-    background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 13px; color: #fff;
-    font-family: inherit;
-    cursor: pointer;
-    display: none;
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 20px;
+    padding: 6px 14px; font-size: 13px; color: #fff; font-family: inherit; cursor: pointer; display: none;
   }
-
   #file-input { display: none; }
-
-  /* ── Analyze Button ── */
   .analyze-btn {
-    width: 100%;
-    height: 56px;
-    background: var(--accent);
-    border: none; border-radius: 18px;
-    font-family: inherit;
-    font-size: 16px; font-weight: 600;
-    color: #060f08;
-    cursor: pointer;
+    width: 100%; height: 56px; background: var(--accent);
+    border: none; border-radius: 18px; font-family: inherit;
+    font-size: 16px; font-weight: 600; color: #060f08; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: transform 0.12s, opacity 0.12s, box-shadow 0.2s;
-    box-shadow: 0 4px 24px var(--accent-glow);
-    margin-bottom: 12px;
-    letter-spacing: -0.2px;
+    transition: transform 0.12s, box-shadow 0.2s;
+    box-shadow: 0 4px 24px var(--accent-glow); margin-bottom: 12px; letter-spacing: -0.2px;
   }
   .analyze-btn:active { transform: scale(0.96); }
-  .analyze-btn:disabled {
-    background: var(--bg-glass-strong);
-    color: var(--text-tertiary);
-    box-shadow: none;
-    cursor: not-allowed;
-  }
-  .btn-icon { font-size: 18px; }
-
-  /* ── Loading ── */
+  .analyze-btn:disabled { background: var(--bg-glass-strong); color: var(--text-tertiary); box-shadow: none; cursor: not-allowed; }
   .loading-card {
-    display: none;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 28px 20px;
-    text-align: center;
-    margin-bottom: 12px;
+    display: none; background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 24px; padding: 28px 20px; text-align: center; margin-bottom: 12px;
   }
   .loading-card.show { display: block; }
-
-  .dna-loader {
-    display: flex; align-items: center; justify-content: center; gap: 5px;
-    margin-bottom: 16px;
-  }
+  .dna-loader { display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 16px; }
   .dna-dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--accent);
+    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
     animation: dna-bounce 1.2s ease-in-out infinite;
   }
-  .dna-dot:nth-child(1) { animation-delay: 0s; }
   .dna-dot:nth-child(2) { animation-delay: 0.15s; background: var(--accent-dim); }
   .dna-dot:nth-child(3) { animation-delay: 0.3s; }
   .dna-dot:nth-child(4) { animation-delay: 0.45s; background: var(--accent-dim); }
@@ -247,185 +145,65 @@
     0%, 60%, 100% { transform: translateY(0) scale(1); opacity: 1; }
     30% { transform: translateY(-12px) scale(1.15); opacity: 0.8; }
   }
-
   .loading-label { font-size: 15px; color: var(--text-primary); font-weight: 500; margin-bottom: 6px; }
   .loading-sub { font-size: 12px; color: var(--text-tertiary); }
-
-  /* ── Error ── */
   .error-card {
-    display: none;
-    background: rgba(255,107,91,0.1);
-    border: 1px solid rgba(255,107,91,0.25);
-    border-radius: 18px;
-    padding: 14px 18px;
-    font-size: 14px; color: var(--danger);
-    margin-bottom: 12px;
+    display: none; background: rgba(255,107,91,0.1); border: 1px solid rgba(255,107,91,0.25);
+    border-radius: 18px; padding: 14px 18px; font-size: 14px; color: var(--danger); margin-bottom: 12px;
   }
   .error-card.show { display: block; }
-
-  /* ── Result ── */
   .result-wrap { display: none; animation: fadeUp 0.5s ease both; }
   .result-wrap.show { display: block; }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Plant identity */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   .plant-id-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 20px;
-    margin-bottom: 12px;
-    display: flex; align-items: center; gap: 16px;
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px;
+    padding: 20px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px;
   }
   .plant-emoji-wrap {
-    width: 64px; height: 64px; flex-shrink: 0;
-    background: var(--accent-glow);
-    border: 1px solid var(--border-accent);
-    border-radius: 18px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 32px;
+    width: 64px; height: 64px; flex-shrink: 0; background: var(--accent-glow);
+    border: 1px solid var(--border-accent); border-radius: 18px;
+    display: flex; align-items: center; justify-content: center; font-size: 32px;
   }
   .plant-name-block { flex: 1; min-width: 0; }
   .plant-name-ko { font-size: 20px; font-weight: 600; letter-spacing: -0.5px; color: var(--text-primary); }
   .plant-name-latin { font-size: 12px; color: var(--text-tertiary); font-style: italic; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .confidence-badge {
-    background: rgba(61,220,106,0.15);
-    border: 1px solid var(--border-accent);
-    border-radius: 10px;
-    padding: 3px 10px;
-    font-size: 11px; color: var(--accent);
-    font-weight: 500;
-    white-space: nowrap;
+    background: rgba(61,220,106,0.15); border: 1px solid var(--border-accent);
+    border-radius: 10px; padding: 3px 10px; font-size: 11px; color: var(--accent); font-weight: 500; white-space: nowrap;
   }
-
-  /* Moisture meter */
-  .moisture-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 20px;
-    margin-bottom: 12px;
-  }
-  .section-header {
-    font-size: 11px; font-weight: 600;
-    color: var(--text-tertiary);
-    text-transform: uppercase; letter-spacing: 0.08em;
-    margin-bottom: 14px;
-  }
-
-  .moisture-dial-wrap {
-    display: flex; align-items: center; justify-content: center;
-    margin: 8px 0 16px;
-    position: relative;
-  }
+  .moisture-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 20px; margin-bottom: 12px; }
+  .section-header { font-size: 11px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+  .moisture-dial-wrap { display: flex; align-items: center; justify-content: center; margin: 8px 0 16px; }
   .dial-svg { overflow: visible; }
-
-  .moisture-status-row {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 12px;
-  }
-  .status-badge-big {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 14px; font-weight: 600;
-  }
-  .moisture-desc {
-    font-size: 13px; color: var(--text-secondary); line-height: 1.6;
-  }
-
-  /* track bar */
-  .track-bar-wrap { margin-top: 14px; }
-  .track-bar-bg {
-    height: 6px; border-radius: 3px;
-    background: rgba(255,255,255,0.08);
-    position: relative; overflow: visible;
-    margin-bottom: 8px;
-  }
-  .track-bar-fill {
-    height: 100%; border-radius: 3px;
-    transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-  }
-  .track-bar-fill::after {
-    content: '';
-    position: absolute; right: -1px; top: 50%;
-    transform: translateY(-50%);
-    width: 14px; height: 14px; border-radius: 50%;
-    background: inherit;
-    box-shadow: 0 0 8px currentColor;
-  }
-  .track-labels {
-    display: flex; justify-content: space-between;
-    font-size: 10px; color: var(--text-tertiary);
-  }
-
-  /* Info pills */
-  .pills-grid {
-    display: grid; grid-template-columns: 1fr 1fr;
-    gap: 8px; margin-bottom: 12px;
-  }
-  .pill-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 14px;
-  }
+  .moisture-status-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .status-badge-big { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+  .moisture-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .pills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .pill-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 14px; }
   .pill-icon { font-size: 20px; margin-bottom: 8px; }
   .pill-label { font-size: 10px; color: var(--text-tertiary); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
   .pill-value { font-size: 14px; font-weight: 600; color: var(--text-primary); line-height: 1.3; }
-
-  /* Tip */
   .tip-card {
     background: linear-gradient(135deg, rgba(61,220,106,0.08), rgba(61,220,106,0.03));
-    border: 1px solid var(--border-accent);
-    border-radius: 20px;
-    padding: 16px;
-    display: flex; gap: 12px; align-items: flex-start;
-    margin-bottom: 12px;
+    border: 1px solid var(--border-accent); border-radius: 20px; padding: 16px;
+    display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px;
   }
   .tip-bulb { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
-  .tip-content { flex: 1; }
   .tip-title { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
   .tip-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
-
-  /* Reset */
   .reset-btn {
-    width: 100%;
-    height: 48px;
-    background: var(--bg-glass);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    font-family: inherit;
-    font-size: 14px; color: var(--text-secondary);
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: background 0.15s;
-    margin-bottom: 4px;
+    width: 100%; height: 48px; background: var(--bg-glass); border: 1px solid var(--border);
+    border-radius: 16px; font-family: inherit; font-size: 14px; color: var(--text-secondary);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.15s; margin-bottom: 4px;
   }
   .reset-btn:active { background: var(--bg-glass-strong); }
-
-  /* ── Home indicator ── */
-  .home-indicator {
-    height: calc(var(--safe-bottom) + 4px);
-    display: flex; align-items: flex-end; justify-content: center;
-    padding-bottom: 8px;
-    flex-shrink: 0;
-  }
-  .home-bar {
-    width: 134px; height: 5px;
-    background: rgba(255,255,255,0.25);
-    border-radius: 3px;
-  }
+  .home-indicator { height: calc(var(--safe-bottom) + 4px); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px; flex-shrink: 0; }
+  .home-bar { width: 134px; height: 5px; background: rgba(255,255,255,0.25); border-radius: 3px; }
 </style>
 </head>
 <body>
-
 <div id="app">
-  <!-- Status Bar -->
   <div class="status-bar">
     <div class="status-time" id="status-time">9:41</div>
     <div class="status-icons">
@@ -435,21 +213,16 @@
     </div>
   </div>
 
-  <!-- Header -->
   <div class="header">
     <div class="header-title">🌿 <span>식물</span> 진단</div>
     <div class="header-sub">AI가 수분 상태를 분석해드려요</div>
   </div>
 
-  <!-- Scrollable Content -->
   <div class="content">
-    <!-- Camera Card -->
     <div class="camera-card">
       <div class="camera-preview" id="camera-preview" onclick="document.getElementById('file-input').click()">
         <div class="camera-placeholder" id="cam-placeholder">
-          <div class="cam-icon-wrap">
-            <div class="cam-icon">📷</div>
-          </div>
+          <div class="cam-icon-wrap"><div class="cam-icon">📷</div></div>
           <div class="cam-label">화분 사진 찍기</div>
           <div class="cam-hint">식물 전체와 흙이 보이도록<br>사진을 찍어주세요</div>
         </div>
@@ -463,42 +236,31 @@
 
     <input type="file" id="file-input" accept="image/*" capture="environment">
 
-    <!-- Analyze Button -->
     <button class="analyze-btn" id="analyze-btn" disabled onclick="analyze()">
-      <span class="btn-icon">🔬</span>
-      지금 분석하기
+      <span>🔬</span> 지금 분석하기
     </button>
 
-    <!-- Loading -->
     <div class="loading-card" id="loading-card">
       <div class="dna-loader">
-        <div class="dna-dot"></div>
-        <div class="dna-dot"></div>
-        <div class="dna-dot"></div>
-        <div class="dna-dot"></div>
-        <div class="dna-dot"></div>
+        <div class="dna-dot"></div><div class="dna-dot"></div><div class="dna-dot"></div>
+        <div class="dna-dot"></div><div class="dna-dot"></div>
       </div>
       <div class="loading-label" id="loading-label">식물을 분석하고 있어요</div>
       <div class="loading-sub">잠시만 기다려주세요...</div>
     </div>
 
-    <!-- Error -->
-    <div class="error-card" id="error-card">⚠️ 분석 중 오류가 발생했어요. 다시 시도해 주세요.</div>
+    <div class="error-card" id="error-card"></div>
 
-    <!-- Result -->
     <div class="result-wrap" id="result-wrap">
-
-      <!-- Plant ID -->
       <div class="plant-id-card">
         <div class="plant-emoji-wrap" id="plant-emoji">🌱</div>
         <div class="plant-name-block">
           <div class="plant-name-ko" id="plant-name-ko">—</div>
           <div class="plant-name-latin" id="plant-name-latin">—</div>
         </div>
-        <div class="confidence-badge" id="conf-badge">AI 분석</div>
+        <div class="confidence-badge">AI 분석완료</div>
       </div>
 
-      <!-- Moisture -->
       <div class="moisture-card">
         <div class="section-header">💧 수분 상태</div>
         <div class="moisture-dial-wrap">
@@ -511,76 +273,51 @@
                 <stop offset="100%" stop-color="#5bc0ff"/>
               </linearGradient>
             </defs>
-            <!-- track -->
             <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="10" stroke-linecap="round"/>
-            <!-- colored arc -->
-            <path id="dial-arc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#arcGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="251.2" style="transition: stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1);"/>
-            <!-- needle -->
-            <line id="dial-needle" x1="100" y1="100" x2="100" y2="28" stroke="#f0f7f1" stroke-width="2.5" stroke-linecap="round" transform-origin="100 100" style="transition: transform 1.5s cubic-bezier(0.34,1.56,0.64,1);"/>
-            <circle cx="100" cy="100" r="6" fill="var(--accent)" style="filter: drop-shadow(0 0 6px var(--accent));"/>
-            <!-- labels -->
+            <path id="dial-arc" d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#arcGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="251.2" stroke-dashoffset="251.2" style="transition:stroke-dashoffset 1.5s cubic-bezier(0.34,1.56,0.64,1)"/>
+            <line id="dial-needle" x1="100" y1="100" x2="100" y2="28" stroke="#f0f7f1" stroke-width="2.5" stroke-linecap="round" transform-origin="100 100" style="transition:transform 1.5s cubic-bezier(0.34,1.56,0.64,1)"/>
+            <circle cx="100" cy="100" r="6" fill="#3ddc6a"/>
             <text x="16" y="118" fill="rgba(240,247,241,0.35)" font-size="9" font-family="sans-serif">건조</text>
             <text x="91" y="22" fill="rgba(240,247,241,0.35)" font-size="9" font-family="sans-serif">적당</text>
             <text x="172" y="118" fill="rgba(240,247,241,0.35)" font-size="9" font-family="sans-serif">과습</text>
-            <!-- center value -->
             <text id="dial-value" x="100" y="90" text-anchor="middle" fill="#f0f7f1" font-size="22" font-weight="600" font-family="sans-serif">—</text>
           </svg>
         </div>
-
         <div class="moisture-status-row">
           <span class="status-badge-big" id="status-badge">—</span>
         </div>
         <div class="moisture-desc" id="moisture-desc">—</div>
       </div>
 
-      <!-- Info Pills -->
-      <div class="pills-grid" id="pills-grid">
-        <div class="pill-card">
-          <div class="pill-icon">💧</div>
-          <div class="pill-label">물 주기</div>
-          <div class="pill-value" id="pill-watering">—</div>
-        </div>
-        <div class="pill-card">
-          <div class="pill-icon">☀️</div>
-          <div class="pill-label">햇빛</div>
-          <div class="pill-value" id="pill-sunlight">—</div>
-        </div>
-        <div class="pill-card">
-          <div class="pill-icon">🌡️</div>
-          <div class="pill-label">적정 온도</div>
-          <div class="pill-value" id="pill-temp">—</div>
-        </div>
-        <div class="pill-card">
-          <div class="pill-icon">⭐</div>
-          <div class="pill-label">관리 난이도</div>
-          <div class="pill-value" id="pill-diff">—</div>
-        </div>
+      <div class="pills-grid">
+        <div class="pill-card"><div class="pill-icon">💧</div><div class="pill-label">물 주기</div><div class="pill-value" id="pill-watering">—</div></div>
+        <div class="pill-card"><div class="pill-icon">☀️</div><div class="pill-label">햇빛</div><div class="pill-value" id="pill-sunlight">—</div></div>
+        <div class="pill-card"><div class="pill-icon">🌡️</div><div class="pill-label">적정 온도</div><div class="pill-value" id="pill-temp">—</div></div>
+        <div class="pill-card"><div class="pill-icon">⭐</div><div class="pill-label">관리 난이도</div><div class="pill-value" id="pill-diff">—</div></div>
       </div>
 
-      <!-- Tip -->
       <div class="tip-card">
         <div class="tip-bulb">💡</div>
-        <div class="tip-content">
+        <div>
           <div class="tip-title">오늘의 케어 팁</div>
           <div class="tip-text" id="tip-text">—</div>
         </div>
       </div>
 
-      <!-- Reset -->
       <button class="reset-btn" onclick="resetApp()">🔄 다른 식물 분석하기</button>
     </div>
-
-  </div><!-- end content -->
+  </div>
 
   <div class="home-indicator"><div class="home-bar"></div></div>
 </div>
 
 <script>
-// Status bar clock
+// ★ 여기에 API 키를 입력하세요
+const API_KEY = 'YOUR_API_KEY_HERE';
+
 function updateTime() {
   const d = new Date();
-  document.getElementById('status-time').textContent =
-    d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
+  document.getElementById('status-time').textContent = d.getHours() + ':' + String(d.getMinutes()).padStart(2,'0');
 }
 updateTime(); setInterval(updateTime, 10000);
 
@@ -594,8 +331,7 @@ document.getElementById('file-input').addEventListener('change', (e) => {
     const url = ev.target.result;
     imageBase64 = url.split(',')[1];
     const prev = document.getElementById('camera-preview');
-    const placeholder = document.getElementById('cam-placeholder');
-    placeholder.style.display = 'none';
+    document.getElementById('cam-placeholder').style.display = 'none';
     let img = prev.querySelector('img');
     if (!img) { img = document.createElement('img'); prev.insertBefore(img, prev.firstChild); }
     img.src = url;
@@ -612,6 +348,11 @@ let loadIdx = 0, loadTimer;
 
 async function analyze() {
   if (!imageBase64) return;
+  if (API_KEY === 'YOUR_API_KEY_HERE') {
+    document.getElementById('error-card').textContent = '⚠️ API 키를 입력해주세요. index.html 상단의 YOUR_API_KEY_HERE 부분을 교체하세요.';
+    document.getElementById('error-card').classList.add('show');
+    return;
+  }
   document.getElementById('analyze-btn').disabled = true;
   document.getElementById('loading-card').classList.add('show');
   document.getElementById('error-card').classList.remove('show');
@@ -624,25 +365,29 @@ async function analyze() {
   }, 2200);
 
   const prompt = `화분 식물 사진을 분석해서 아래 JSON만 반환해. 마크다운 없이 순수 JSON 객체만.
-
 {
   "name": "한국어 식물 이름",
   "emoji": "식물에 맞는 이모지 1개",
   "latinName": "학명",
   "moistureLevel": 수분지수_정수(0-100, 0=매우건조 50=적당 100=과습),
   "moistureStatus": "매우 건조" | "건조" | "적당" | "촉촉" | "과습",
-  "moistureDesc": "현재 수분 상태 설명 (1-2문장)",
-  "wateringInterval": "물 주기 (예: 주 1회)",
-  "sunlight": "햇빛 요구량 (짧게, 예: 밝은 간접광)",
-  "temperature": "적정 온도 (예: 18-25°C)",
-  "difficulty": "관리 난이도 (초급/중급/고급)",
+  "moistureDesc": "현재 수분 상태 설명 1-2문장",
+  "wateringInterval": "물 주기 예: 주 1회",
+  "sunlight": "햇빛 요구량 짧게",
+  "temperature": "적정 온도 예: 18-25도",
+  "difficulty": "초급 또는 중급 또는 고급",
   "tip": "이 식물 수분 관리 꿀팁 1문장"
 }`;
 
   try {
     const resp = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514', max_tokens: 1000,
         messages: [{ role: 'user', content: [
@@ -653,73 +398,58 @@ async function analyze() {
     });
     clearInterval(loadTimer);
     document.getElementById('loading-card').classList.remove('show');
-    if (!resp.ok) throw new Error('api');
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || 'API 오류');
+    }
     const data = await resp.json();
     const raw = data.content.map(c => c.text||'').join('').replace(/```json|```/g,'').trim();
-    const r = JSON.parse(raw);
-    renderResult(r);
+    renderResult(JSON.parse(raw));
   } catch(err) {
     clearInterval(loadTimer);
     document.getElementById('loading-card').classList.remove('show');
+    document.getElementById('error-card').textContent = '⚠️ ' + (err.message || '분석 중 오류가 발생했어요. 다시 시도해 주세요.');
     document.getElementById('error-card').classList.add('show');
     document.getElementById('analyze-btn').disabled = false;
   }
 }
 
 function renderResult(r) {
-  // plant id
   document.getElementById('plant-emoji').textContent = r.emoji || '🌱';
   document.getElementById('plant-name-ko').textContent = r.name || '알 수 없는 식물';
   document.getElementById('plant-name-latin').textContent = r.latinName || '';
-  document.getElementById('conf-badge').textContent = 'AI 분석완료';
-
-  // moisture dial
   const level = Math.max(0, Math.min(100, r.moistureLevel ?? 50));
-  const arcLen = 251.2;
-  const offset = arcLen - (arcLen * level / 100);
   setTimeout(() => {
-    document.getElementById('dial-arc').style.strokeDashoffset = offset;
-    const angle = -90 + (level / 100) * 180;
-    document.getElementById('dial-needle').style.transform = `rotate(${angle}deg)`;
+    document.getElementById('dial-arc').style.strokeDashoffset = 251.2 - (251.2 * level / 100);
+    document.getElementById('dial-needle').style.transform = `rotate(${-90 + (level / 100) * 180}deg)`;
     document.getElementById('dial-value').textContent = level;
   }, 200);
-
-  // status badge
-  const statusColors = {
+  const sc = {
     '매우 건조': { bg: 'rgba(255,107,91,0.18)', color: '#ff6b5b', icon: '🏜️' },
-    '건조':      { bg: 'rgba(255,181,71,0.18)', color: '#ffb547', icon: '🌵' },
-    '적당':      { bg: 'rgba(61,220,106,0.18)', color: '#3ddc6a', icon: '✅' },
-    '촉촉':      { bg: 'rgba(91,192,255,0.18)', color: '#5bc0ff', icon: '💧' },
+    '건조':      { bg: 'rgba(255,181,71,0.18)',  color: '#ffb547', icon: '🌵' },
+    '적당':      { bg: 'rgba(61,220,106,0.18)',  color: '#3ddc6a', icon: '✅' },
+    '촉촉':      { bg: 'rgba(91,192,255,0.18)',  color: '#5bc0ff', icon: '💧' },
     '과습':      { bg: 'rgba(180,126,255,0.18)', color: '#b47eff', icon: '🌊' },
-  };
-  const sc = statusColors[r.moistureStatus] || statusColors['적당'];
+  }[r.moistureStatus] || { bg: 'rgba(61,220,106,0.18)', color: '#3ddc6a', icon: '✅' };
   const badge = document.getElementById('status-badge');
-  badge.style.background = sc.bg;
-  badge.style.color = sc.color;
+  badge.style.background = sc.bg; badge.style.color = sc.color;
   badge.textContent = sc.icon + ' ' + (r.moistureStatus || '적당');
-
   document.getElementById('moisture-desc').textContent = r.moistureDesc || '';
   document.getElementById('pill-watering').textContent = r.wateringInterval || '—';
   document.getElementById('pill-sunlight').textContent = r.sunlight || '—';
   document.getElementById('pill-temp').textContent = r.temperature || '—';
   document.getElementById('pill-diff').textContent = r.difficulty || '—';
   document.getElementById('tip-text').textContent = r.tip || '';
-
   document.getElementById('result-wrap').classList.add('show');
   document.getElementById('analyze-btn').disabled = false;
-
-  // scroll to result
-  setTimeout(() => {
-    document.getElementById('result-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 300);
+  setTimeout(() => document.getElementById('result-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
 }
 
 function resetApp() {
   imageBase64 = null;
   document.getElementById('file-input').value = '';
   const prev = document.getElementById('camera-preview');
-  const img = prev.querySelector('img');
-  if (img) img.remove();
+  const img = prev.querySelector('img'); if (img) img.remove();
   document.getElementById('cam-placeholder').style.display = '';
   document.getElementById('retake-btn').style.display = 'none';
   document.getElementById('analyze-btn').disabled = true;
