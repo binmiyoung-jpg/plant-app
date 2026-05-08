@@ -77,7 +77,7 @@
   .camera-card {
     background: var(--bg-card); border: 1px solid var(--border);
     border-radius: 24px; overflow: hidden; position: relative;
-    margin-bottom: 12px; transition: transform 0.15s ease;
+    margin-bottom: 12px;
   }
   .camera-preview {
     width: 100%; height: 220px;
@@ -102,7 +102,7 @@
     content: ''; position: absolute; inset: -4px;
     border: 1px solid rgba(61,220,106,0.15); border-radius: 24px;
   }
-  .cam-icon { font-size: 30px; filter: drop-shadow(0 0 8px var(--accent-glow)); }
+  .cam-icon { font-size: 30px; }
   .cam-label { font-size: 15px; font-weight: 500; color: var(--text-primary); }
   .cam-hint { font-size: 12px; color: var(--text-tertiary); text-align: center; line-height: 1.5; }
   .corner { position: absolute; width: 20px; height: 20px; }
@@ -123,7 +123,7 @@
     font-size: 16px; font-weight: 600; color: #060f08; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 8px;
     transition: transform 0.12s, box-shadow 0.2s;
-    box-shadow: 0 4px 24px var(--accent-glow); margin-bottom: 12px; letter-spacing: -0.2px;
+    box-shadow: 0 4px 24px var(--accent-glow); margin-bottom: 12px;
   }
   .analyze-btn:active { transform: scale(0.96); }
   .analyze-btn:disabled { background: var(--bg-glass-strong); color: var(--text-tertiary); box-shadow: none; cursor: not-allowed; }
@@ -133,10 +133,7 @@
   }
   .loading-card.show { display: block; }
   .dna-loader { display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 16px; }
-  .dna-dot {
-    width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
-    animation: dna-bounce 1.2s ease-in-out infinite;
-  }
+  .dna-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: dna-bounce 1.2s ease-in-out infinite; }
   .dna-dot:nth-child(2) { animation-delay: 0.15s; background: var(--accent-dim); }
   .dna-dot:nth-child(3) { animation-delay: 0.3s; }
   .dna-dot:nth-child(4) { animation-delay: 0.45s; background: var(--accent-dim); }
@@ -149,7 +146,7 @@
   .loading-sub { font-size: 12px; color: var(--text-tertiary); }
   .error-card {
     display: none; background: rgba(255,107,91,0.1); border: 1px solid rgba(255,107,91,0.25);
-    border-radius: 18px; padding: 14px 18px; font-size: 14px; color: var(--danger); margin-bottom: 12px;
+    border-radius: 18px; padding: 14px 18px; font-size: 14px; color: var(--danger); margin-bottom: 12px; line-height: 1.5;
   }
   .error-card.show { display: block; }
   .result-wrap { display: none; animation: fadeUp 0.5s ease both; }
@@ -312,8 +309,11 @@
 </div>
 
 <script>
-// ★ 여기에 API 키를 입력하세요
-const API_KEY = 'YOUR_API_KEY_HERE';
+// ★ 여기에 Gemini API 키를 입력하세요 (aistudio.google.com에서 무료 발급)
+const API_KEY = 'YOUR_GEMINI_API_KEY_HERE';
+
+// Gemini 모델 (무료 티어 사용)
+const MODEL = 'gemini-2.0-flash';
 
 function updateTime() {
   const d = new Date();
@@ -348,9 +348,8 @@ let loadIdx = 0, loadTimer;
 
 async function analyze() {
   if (!imageBase64) return;
-  if (API_KEY === 'YOUR_API_KEY_HERE') {
-    document.getElementById('error-card').textContent = '⚠️ API 키를 입력해주세요. index.html 상단의 YOUR_API_KEY_HERE 부분을 교체하세요.';
-    document.getElementById('error-card').classList.add('show');
+  if (API_KEY === 'YOUR_GEMINI_API_KEY_HERE') {
+    showError('⚠️ API 키를 입력해주세요.\n\naistudio.google.com에서 무료로 발급 후\nindex.html 상단의 YOUR_GEMINI_API_KEY_HERE 부분을 교체하세요.');
     return;
   }
   document.getElementById('analyze-btn').disabled = true;
@@ -364,66 +363,79 @@ async function analyze() {
     document.getElementById('loading-label').textContent = loadingMsgs[loadIdx];
   }, 2200);
 
-  const prompt = `화분 식물 사진을 분석해서 아래 JSON만 반환해. 마크다운 없이 순수 JSON 객체만.
+  const prompt = `화분 식물 사진을 분석해서 아래 JSON만 반환해줘. 마크다운 없이 순수 JSON 객체만 반환해. 절대 다른 텍스트 포함하지 마.
 {
   "name": "한국어 식물 이름",
   "emoji": "식물에 맞는 이모지 1개",
   "latinName": "학명",
   "moistureLevel": 수분지수_정수(0-100, 0=매우건조 50=적당 100=과습),
-  "moistureStatus": "매우 건조" | "건조" | "적당" | "촉촉" | "과습",
+  "moistureStatus": "매우 건조" 또는 "건조" 또는 "적당" 또는 "촉촉" 또는 "과습",
   "moistureDesc": "현재 수분 상태 설명 1-2문장",
-  "wateringInterval": "물 주기 예: 주 1회",
+  "wateringInterval": "물 주기 예시: 주 1회",
   "sunlight": "햇빛 요구량 짧게",
-  "temperature": "적정 온도 예: 18-25도",
+  "temperature": "적정 온도 예시: 18-25도",
   "difficulty": "초급 또는 중급 또는 고급",
   "tip": "이 식물 수분 관리 꿀팁 1문장"
 }`;
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514', max_tokens: 1000,
-        messages: [{ role: 'user', content: [
-          { type: 'image', source: { type: 'base64', media_type: imageMime, data: imageBase64 } },
-          { type: 'text', text: prompt }
-        ]}]
-      })
-    });
+    const resp = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            parts: [
+              { inline_data: { mime_type: imageMime, data: imageBase64 } },
+              { text: prompt }
+            ]
+          }],
+          generationConfig: { temperature: 0.1, maxOutputTokens: 1000 }
+        })
+      }
+    );
+
     clearInterval(loadTimer);
     document.getElementById('loading-card').classList.remove('show');
+
     if (!resp.ok) {
       const err = await resp.json().catch(() => ({}));
-      throw new Error(err.error?.message || 'API 오류');
+      const msg = err.error?.message || '알 수 없는 오류';
+      throw new Error(msg);
     }
+
     const data = await resp.json();
-    const raw = data.content.map(c => c.text||'').join('').replace(/```json|```/g,'').trim();
-    renderResult(JSON.parse(raw));
+    const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const clean = raw.replace(/```json|```/g, '').trim();
+    renderResult(JSON.parse(clean));
+
   } catch(err) {
     clearInterval(loadTimer);
     document.getElementById('loading-card').classList.remove('show');
-    document.getElementById('error-card').textContent = '⚠️ ' + (err.message || '분석 중 오류가 발생했어요. 다시 시도해 주세요.');
-    document.getElementById('error-card').classList.add('show');
+    showError('⚠️ ' + (err.message || '분석 중 오류가 발생했어요. 다시 시도해 주세요.'));
     document.getElementById('analyze-btn').disabled = false;
   }
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-card');
+  el.textContent = msg;
+  el.classList.add('show');
 }
 
 function renderResult(r) {
   document.getElementById('plant-emoji').textContent = r.emoji || '🌱';
   document.getElementById('plant-name-ko').textContent = r.name || '알 수 없는 식물';
   document.getElementById('plant-name-latin').textContent = r.latinName || '';
+
   const level = Math.max(0, Math.min(100, r.moistureLevel ?? 50));
   setTimeout(() => {
     document.getElementById('dial-arc').style.strokeDashoffset = 251.2 - (251.2 * level / 100);
     document.getElementById('dial-needle').style.transform = `rotate(${-90 + (level / 100) * 180}deg)`;
     document.getElementById('dial-value').textContent = level;
   }, 200);
+
   const sc = {
     '매우 건조': { bg: 'rgba(255,107,91,0.18)', color: '#ff6b5b', icon: '🏜️' },
     '건조':      { bg: 'rgba(255,181,71,0.18)',  color: '#ffb547', icon: '🌵' },
@@ -431,15 +443,19 @@ function renderResult(r) {
     '촉촉':      { bg: 'rgba(91,192,255,0.18)',  color: '#5bc0ff', icon: '💧' },
     '과습':      { bg: 'rgba(180,126,255,0.18)', color: '#b47eff', icon: '🌊' },
   }[r.moistureStatus] || { bg: 'rgba(61,220,106,0.18)', color: '#3ddc6a', icon: '✅' };
+
   const badge = document.getElementById('status-badge');
-  badge.style.background = sc.bg; badge.style.color = sc.color;
+  badge.style.background = sc.bg;
+  badge.style.color = sc.color;
   badge.textContent = sc.icon + ' ' + (r.moistureStatus || '적당');
+
   document.getElementById('moisture-desc').textContent = r.moistureDesc || '';
   document.getElementById('pill-watering').textContent = r.wateringInterval || '—';
   document.getElementById('pill-sunlight').textContent = r.sunlight || '—';
   document.getElementById('pill-temp').textContent = r.temperature || '—';
   document.getElementById('pill-diff').textContent = r.difficulty || '—';
   document.getElementById('tip-text').textContent = r.tip || '';
+
   document.getElementById('result-wrap').classList.add('show');
   document.getElementById('analyze-btn').disabled = false;
   setTimeout(() => document.getElementById('result-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
